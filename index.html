@@ -1,94 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>TRC20 Token Deployer</title>
   <script src="https://cdn.jsdelivr.net/npm/tronweb/dist/TronWeb.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f9f9f9;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      max-width: 500px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-      margin: auto;
-    }
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-    button {
-      background: #28a745;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #218838;
-    }
-    .status {
-      margin-top: 10px;
-      color: #333;
-    }
-  </style>
 </head>
 <body>
-  <div class="container">
-    <h2>TRC20 Token Deployer</h2>
-    <button onclick="connectWallet()">Connect TronLink Wallet</button>
-    <input type="text" id="name" placeholder="Token Name (e.g. usdt)" />
-    <input type="text" id="symbol" placeholder="Symbol (e.g. tether)" />
-    <input type="number" id="decimals" placeholder="Decimals (e.g. 6)" />
-    <input type="number" id="supply" placeholder="Total Supply (e.g. 1000000)" />
-    <button onclick="deployToken()">Deploy Token</button>
-    <div class="status" id="status"></div>
-  </div>
+  <h2>TRC20 Token Deployer</h2>
+  <button onclick="connectWallet()">Connect TronLink</button><br><br>
+  <input id="name" placeholder="Token Name" /><br>
+  <input id="symbol" placeholder="Symbol" /><br>
+  <input id="decimals" type="number" placeholder="Decimals (e.g. 6)" /><br>
+  <input id="supply" type="number" placeholder="Initial Supply" /><br>
+  <button onclick="deployToken()">Deploy</button>
+  <p id="status"></p>
 
   <script>
-    const abi = [/* TRC20 ABI here */];
-    const bytecode = "0x..."; // compiled TRC20 bytecode
+    const abi = [{'inputs': [{'internalType': 'string', 'name': '_name', 'type': 'string'}, {'internalType': 'string', 'name': '_symbol', 'type': 'string'}, {'internalType': 'uint8', 'name': '_decimals', 'type': 'uint8'}, {'internalType': 'uint256', 'name': '_initialSupply', 'type': 'uint256'}], 'stateMutability': 'nonpayable', 'type': 'constructor'}];
+    const bytecode = `0x608060405234801561001057600080fd5b506040516101d03803806101d08339818101604052602081101561003357600080fd5b8101908080519060200190929190505050806000819055505061012e806100596000396000f3fe6080604052600436106100295760003560e01c8063...`;
 
     async function connectWallet() {
-      const status = document.getElementById("status");
-      if (typeof window.tronWeb === 'undefined') {
-        status.innerText = "TronLink is not installed.";
+      const status = document.getElementById('status');
+      if (!window.tronWeb || !tronWeb.ready) {
+        status.innerText = "❌ TronLink not connected";
         return;
       }
-
-      try {
-        const isTronLink = await window.tronWeb.ready;
-        if (!isTronLink) {
-          status.innerText = "Please log in to TronLink and refresh the page.";
-          return;
-        }
-
-        const address = tronWeb.defaultAddress.base58;
-        status.innerText = `Wallet connected: ${address}`;
-      } catch (error) {
-        console.error(error);
-        status.innerText = "Failed to connect wallet.";
-      }
+      const address = tronWeb.defaultAddress.base58;
+      status.innerText = "✅ Connected: " + address;
     }
 
     async function deployToken() {
-      const name = document.getElementById("name").value;
-      const symbol = document.getElementById("symbol").value;
-      const decimals = document.getElementById("decimals").value;
-      const supply = document.getElementById("supply").value;
+      const name = document.getElementById('name').value;
+      const symbol = document.getElementById('symbol').value;
+      const decimals = parseInt(document.getElementById('decimals').value);
+      const supply = parseInt(document.getElementById('supply').value);
+      const status = document.getElementById('status');
 
-      const status = document.getElementById("status");
-
-      if (!window.tronWeb || !tronWeb.defaultAddress.base58) {
-        status.innerText = "Please log in to TronLink first.";
+      if (!tronWeb || !tronWeb.ready) {
+        status.innerText = "Please connect TronLink first.";
         return;
       }
 
@@ -99,10 +49,10 @@
           parameters: [name, symbol, decimals, supply]
         });
 
-        status.innerHTML = `✅ Deployed at address: <strong>${contract.address}</strong>`;
-      } catch (error) {
-        console.error(error);
-        status.innerText = "Deployment failed. Check console for details.";
+        status.innerText = "✅ Contract deployed at: " + contract.address;
+      } catch (err) {
+        console.error(err);
+        status.innerText = "❌ Deployment failed. Check console for details.";
       }
     }
   </script>
