@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,14 +12,14 @@
   <button onclick="connectWallet()">Connect TronLink</button><br><br>
   <input id="name" placeholder="Token Name" /><br>
   <input id="symbol" placeholder="Symbol" /><br>
-  <input id="decimals" type="number" placeholder="Decimals (e.g. 6)" /><br>
+  <input id="decimals" type="number" placeholder="Decimals" /><br>
   <input id="supply" type="number" placeholder="Initial Supply" /><br>
   <button onclick="deployToken()">Deploy</button>
   <p id="status"></p>
 
   <script>
-    const abi = [{'inputs': [{'internalType': 'string', 'name': '_name', 'type': 'string'}, {'internalType': 'string', 'name': '_symbol', 'type': 'string'}, {'internalType': 'uint8', 'name': '_decimals', 'type': 'uint8'}, {'internalType': 'uint256', 'name': '_initialSupply', 'type': 'uint256'}], 'stateMutability': 'nonpayable', 'type': 'constructor'}, {'anonymous': False, 'inputs': [{'indexed': True, 'internalType': 'address', 'name': 'from', 'type': 'address'}, {'indexed': True, 'internalType': 'address', 'name': 'to', 'type': 'address'}, {'indexed': False, 'internalType': 'uint256', 'name': 'value', 'type': 'uint256'}], 'name': 'Transfer', 'type': 'event'}, {'inputs': [{'internalType': 'address', 'name': '_to', 'type': 'address'}, {'internalType': 'uint256', 'name': '_value', 'type': 'uint256'}], 'name': 'transfer', 'outputs': [{'internalType': 'bool', 'name': 'success', 'type': 'bool'}], 'stateMutability': 'nonpayable', 'type': 'function'}];
-    const bytecode = "0x608060405234801561001057600080fd5b506040516104003803806104008339818101604052602081101561003357600080fd5b81019080805190602001909291905050508060008190555050610137806100596000396000f3fe60806040...";
+    const abi = [/* ABI will be inserted here */];
+    const bytecode = "0x..."; // Full bytecode to be replaced with compiled TRON-compatible bytecode
 
     async function connectWallet() {
       const status = document.getElementById('status');
